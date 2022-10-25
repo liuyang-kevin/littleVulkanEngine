@@ -82,10 +82,27 @@ void LveDevice::createInstance() {
   appInfo.apiVersion = VK_API_VERSION_1_0;
 
   VkInstanceCreateInfo createInfo = {};
+
+  // auto requiredExtensions = getRequiredExtensions();
+  // requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+
+  // 添加相应extension
+  // createInfo.enabledExtensionCount = (uint32_t) requiredExtensions.size();
+  // createInfo.ppEnabledExtensionNames = requiredExtensions.data();
+
   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfo.pApplicationInfo = &appInfo;
 
   auto extensions = getRequiredExtensions();
+#ifdef __APPLE__
+#include "TargetConditionals.h"
+#ifdef TARGET_OS_MAC
+  // Mac需要这个模式运行？那个什么Metal桥接的东西
+  createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+  extensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+#endif
+#endif
+
   createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
   createInfo.ppEnabledExtensionNames = extensions.data();
 

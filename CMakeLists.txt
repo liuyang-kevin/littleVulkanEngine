@@ -55,6 +55,8 @@ else()
 endif()
 
 include_directories(external)
+# 手动置顶vulkan的时候会找不到include
+# include_directories(${Vulkan_INCLUDE_DIR})
 
 # If TINYOBJ_PATH not specified in .env.cmake, try fetching from git repo
 if (NOT TINYOBJ_PATH)
